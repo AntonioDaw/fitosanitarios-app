@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "C:/Users/antonio/OneDrive/Escritorio/DAW/proyecto_rexwaher"
+		}
+	],
+	"settings": {
+		"remotefs.remote": {
+			"MiServidor": {
+				"host": "juanmaalonso.com",
+				"port": 21,
+				"scheme": "sftp",
+				"username": "juanmarwpracticasa",
+				"password": "r > 9P6oXq!c",
+				"rootPath": "/"
+			}
+		},
+		"php.suggest.basic": false
+	}
+}
