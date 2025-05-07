@@ -2,13 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\Tipo;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Cultivo>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Proveedor>
  */
-class CultivoFactory extends Factory
+class ProveedorFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,8 +17,7 @@ class CultivoFactory extends Factory
     public function definition(): array
     {
         return [
-            'nombre' => $this->faker->word(),
-            'tipo_id' =>Tipo::factory(), // Crear un tipo asociado al cultivo
+            //
         ];
     }
 }

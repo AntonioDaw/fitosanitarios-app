@@ -13,4 +13,9 @@ class Sector extends Model
     {
         return $this->belongsToMany(Cultivo::class);
     }
+
+    public function parcela()
+    {
+        return $this->belongsTo(Parcela::class);
+    }
 }

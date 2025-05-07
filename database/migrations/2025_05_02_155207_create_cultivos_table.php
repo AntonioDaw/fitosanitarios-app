@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('cultivos', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->string('imagen');
             $table->foreignId('tipo_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Cultivo extends Model
 {
     use HasFactory;
-
+    protected $fillable = ['nombre', 'tipo_id'];
     public function tipo()
     {
         return $this->belongsTo(Tipo::class);

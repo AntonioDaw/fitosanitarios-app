@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Parcela;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,9 @@ class SectorFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            // Asocia con una parcela existente o crea una nueva
+            'parcela_id' => Parcela::inRandomOrder()->first()?->id ?? Parcela::factory(),
+            'numero_sector' => $this->faker->numberBetween(1, 4)
         ];
     }
 }

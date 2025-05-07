@@ -24,7 +24,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             TipoSeeder::class,
-            CultivoSeeder::class
+            CultivoSeeder::class,
+            ParcelaSeeder::class,
+            SectorSeeder::class
         ]);
     }
 

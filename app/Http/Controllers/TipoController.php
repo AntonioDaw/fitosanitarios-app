@@ -21,17 +21,6 @@ class TipoController extends Controller
 
     public function show($id)
     {
-//        // Validación explícita
-//        $validated = validator()->make(['id' => $id], [
-//            'id' => 'required|integer|exists:tipos,id',
-//        ]);
-//
-//        if ($validated->fails()) {
-//            return response()->json([
-//                'status' => 'error',
-//                'message' => 'ID inválido'
-//                ], 400);
-//        }
         $tipo = Tipo::find($id);
 
         if (!$tipo) {

@@ -11,11 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('parcelas', function (Blueprint $table) {
+        Schema::create('proveedors', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->integer('numero_parcela');
-            $table->float('area');
+            $table->string('nif')->unique();
+            $table->string('direccion');
+            $table->string('telefono');
+            $table->string('email');
+            $table->string('contacto');
+            $table->boolean('estado')->default(true);
             $table->timestamps();
         });
     }
@@ -25,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('parcelas');
+        Schema::dropIfExists('proveedors');
     }
 };

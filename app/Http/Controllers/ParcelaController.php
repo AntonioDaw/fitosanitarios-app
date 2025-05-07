@@ -7,9 +7,30 @@ use Illuminate\Http\Request;
 
 class ParcelaController extends Controller
 {
-    public function show()
+    public function getAll()
     {
-        $parcela = Parcela::all();
-        return response()->json($parcela); // Devolvemos la parcela como JSON
+        $parcelas = Parcela::all();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $parcelas
+        ], 200); // OK
+    }
+
+    public function show($id)
+    {
+        $parcela = Parcela::find($id);
+
+        if (!$parcela) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Parcela no encontrado'
+            ], 404); // Not Found
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $parcela
+        ], 200); // OK
     }
 }

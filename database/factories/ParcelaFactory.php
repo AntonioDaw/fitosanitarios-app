@@ -17,7 +17,9 @@ class ParcelaFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'nombre' => $this->faker->word(),
+            'numero_parcela' => $this->faker->numberBetween(1, 100),
+            'area' => $this->faker->randomFloat(2, 0.5, 10.0), // entre 0.5 y 10 ha
         ];
     }
 }
