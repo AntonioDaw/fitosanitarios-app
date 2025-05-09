@@ -11,12 +11,12 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 Route::get('/tipos/{id}', [TipoController::class, 'show']);
-Route::get('/tipos', [TipoController::class, 'getAll']);
+Route::get('/tipos', [TipoController::class, 'index']);
 Route::post('/tipos', [TipoController::class, 'store']);
 Route::put('/tipos/{id}', [TipoController::class, 'update']);
 Route::delete('/tipos/{id}', [TipoController::class, 'delete']);
 
-Route::get('/cultivos', [CultivoController::class, 'getAll']);
+Route::get('/cultivos', [CultivoController::class, 'index']);
 Route::get('/cultivos/{id}', [CultivoController::class, 'show']);
 Route::post('/cultivos', [CultivoController::class, 'store']);
 Route::put('/cultivos/{id}', [CultivoController::class, 'update']);

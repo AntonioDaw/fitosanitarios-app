@@ -3,20 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTipoRequest;
+use App\Http\Resources\TipoResource;
 use App\Models\Tipo;
+use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 
 class TipoController extends Controller
 {
-
-    public function getAll()
+    use ApiResponser;
+public function index(Request $request)
     {
-        $tipos = Tipo::all();
+        $perPage = $request->input('per_page', 10);
+        $tiposPaginados = Tipo::paginate($perPage);
+        $tiposResource = TipoResource::collection($tiposPaginados);
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $tipos
-        ], 200); // OK
+        return $this->paginatedResponse($tiposResource, $tiposPaginados);
+
     }
 
     public function show($id)

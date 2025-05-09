@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Http\Requests;
-use Illuminate\Contracts\Validation\Validator;
+
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
 
-class StoreCultivoRequest extends FormRequest
+class StoreParcelaRequest extends FormRequest
 {
 
     /**
@@ -24,9 +25,10 @@ class StoreCultivoRequest extends FormRequest
     public function rules(): array
     {
         return [
-                'nombre' => 'required|string|max:255',
-                'tipo_id' => 'required|exists:tipos,id', // valida que el tipo exista
-            ];
+            'nombre' => 'required|string|max:255|unique:parcelas,nombre',
+            'numero_parcela' => 'required|integer|min:1|max:999|unique:parcelas,numero_parcela',
+            'area' => 'required|numeric|gt:0',
+        ];
     }
 
     /**
@@ -37,10 +39,11 @@ class StoreCultivoRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'nombre' => 'required|string|max:255|unique:cultivos,nombre',
+            'nombre.required' => 'El nombre es obligatorio.',
             'nombre.unique' => 'El nombre debe ser único.',
-            'tipo_id.required' => 'El tipo es obligatorio.',
-            'tipo_id.exists' => 'El tipo no existe.',
+            'numero_parcela.required' => 'El numero de parcela es obligatorio.',
+            'numero_parcela' => 'El numero de parcela debe ser único.',
+            'area.required' => 'El area es obligatorio.',
         ];
     }
 
@@ -55,4 +58,5 @@ class StoreCultivoRequest extends FormRequest
 
         throw new ValidationException($validator, $response);
     }
+
 }

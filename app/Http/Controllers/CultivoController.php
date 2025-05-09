@@ -5,19 +5,24 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCultivoRequest;
 use App\Http\Resources\CultivoResource;
 use App\Models\Cultivo;
+use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
+
+
 
 class CultivoController extends Controller
 {
-    public function getAll()
-    {
-        $cultivos = CultivoResource::collection(Cultivo::all());
+    use ApiResponser;
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $cultivos
-        ], 200); // OK
+    public function index(Request $request)
+    {
+        $perPage = $request->input('per_page', 10);
+        $cultivosPaginados = Cultivo::paginate($perPage);
+        $cultivosResource = CultivoResource::collection($cultivosPaginados);
+
+        return $this->paginatedResponse($cultivosResource, $cultivosPaginados);
     }
+
 
     public function show($id)
     {
@@ -45,7 +50,6 @@ class CultivoController extends Controller
             'nombre' => $validated['nombre'],
             'tipo_id' => $validated['tipo_id'],
         ]);
-
 
 
         return response()->json([
@@ -84,7 +88,8 @@ class CultivoController extends Controller
         ], 200);
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         // Buscar el cultivo antes de eliminarlo
         $cultivo = Cultivo::find($id);
 
@@ -106,4 +111,5 @@ class CultivoController extends Controller
         ], 200); // 200 OK
     }
 }
+
 
