@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreParcelaRequest;
+use App\Http\Requests\ParcelaRequest;
 use App\Models\Parcela;
-use App\Models\Tipo;
+use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 
 class ParcelaController extends Controller
 {
-    public function getAll()
+    use ApiResponser;
+    public function index(Request $request)
     {
-        $parcelas = Parcela::all();
+        $perPage = $request->input('per_page', 10);
+        $parcelasPaginadas = Parcela::paginate($perPage);
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $parcelas
-        ], 200); // OK
+
+        return $this->paginatedResponse($parcelasPaginadas->items(), $parcelasPaginadas);
     }
 
     public function show($id)
@@ -37,7 +37,7 @@ class ParcelaController extends Controller
     }
 
     // Metodo para crear un nuevo Tipo
-    public function store(StoreParcelaRequest $request)
+    public function store(ParcelaRequest $request)
     {
         $validated = $request->validated();
 
@@ -55,30 +55,31 @@ class ParcelaController extends Controller
         ], 201); // Created
     }
 
-    public function update(StoreParcelaRequest $request, $id)
+    public function update(ParcelaRequest $request, $id)
     {
-        // Encontramos el tipo por su ID
+        // Encontramos el parcela por su ID
         $parcela = Parcela::find($id);
 
-        // Si no se encuentra el tipo, devolvemos un error
+        // Si no se encuentra el parcela, devolvemos un error
         if (!$parcela) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Tipo no encontrado'
+                'message' => 'Parcela no encontrada'
             ], 404); // Not Found
         }
 
-        // Validamos los datos a través de StoreTipoRequest
+        // Validamos los datos a través de ParcelaRequest
         $validated = $request->validated();
 
-        // Actualizamos los campos del tipo con los datos validados
+        // Actualizamos los campos del parcela con los datos validados
         $parcela->nombre = $validated['nombre'];
-        $parcela->icono = $validated['icono'];
+        $parcela->numero_parcela = $validated['numero_parcela'];
+        $parcela->area = $validated['area'];
 
-        // Guardamos el tipo actualizado en la base de datos
+        // Guardamos el parcela actualizado en la base de datos
         $parcela->save();
 
-        // Devolvemos el tipo actualizado
+        // Devolvemos el parcela actualizado
         return response()->json([
             'status' => 'success',
             'data' => $parcela
@@ -86,24 +87,24 @@ class ParcelaController extends Controller
     }
 
     public function delete($id){
-        // Buscar el tipo antes de eliminarlo
-        $tipo = Tipo::find($id);
+        // Buscar la parcela antes de eliminarla
+        $parcela = Parcela::find($id);
 
-        // Verificar si el tipo existe
-        if (!$tipo) {
+        // Verificar si la parcela existe
+        if (!$parcela) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Tipo no encontrado.'
+                'message' => 'Parcela no encontrada.'
             ], 404); // 404 Not Found
         }
 
-        // Eliminar el tipo
-        $tipo->delete();
+        // Eliminar la parcela
+        $parcela->delete();
 
-        // Retornar la respuesta con el tipo eliminado
+        // Retornar la respuesta con la parcela eliminada
         return response()->json([
             'status' => 'success',
-            'data' => $tipo
+            'data' => $parcela
         ], 200); // 200 OK
     }
 }

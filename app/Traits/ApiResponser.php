@@ -2,24 +2,23 @@
 
 namespace App\Traits;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Http\Resources\Json\ResourceCollection;
 
 trait ApiResponser
 {
     /**
-     * Devuelve una respuesta JSON paginada con formato personalizado
+     * Devuelve una respuesta JSON paginada con datos crudos o resource.
      *
-     * @param ResourceCollection $resourceCollection
+     * @param mixed $data Una colección simple o una ResourceCollection
      * @param LengthAwarePaginator $paginator
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    protected function paginatedResponse(ResourceCollection $resourceCollection, LengthAwarePaginator $paginator)
+    protected function paginatedResponse($data, LengthAwarePaginator $paginator)
     {
         return response()->json([
             'status' => 'success',
-            'data' => $resourceCollection,
+            'data' => $data,
             'pagination' => [
                 'total' => $paginator->total(),
                 'per_page' => $paginator->perPage(),

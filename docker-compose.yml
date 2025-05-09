@@ -1,4 +1,18 @@
 services:
+    # otros servicios como mysql, laravel, etc.
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - "8080:80"
+        environment:
+            PMA_HOST: mysql
+            PMA_PORT: 3306
+            SESSION_COOKIE_SECURE: 0
+        depends_on:
+            - mysql
+        networks:
+            - sail
     laravel.test:
         build:
             context: './docker/8.4'
@@ -110,3 +124,4 @@ volumes:
         driver: local
     sail-meilisearch:
         driver: local
+

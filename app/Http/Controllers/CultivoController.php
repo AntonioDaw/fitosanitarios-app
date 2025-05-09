@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreCultivoRequest;
+use App\Http\Requests\CultivoRequest;
 use App\Http\Resources\CultivoResource;
 use App\Models\Cultivo;
+use App\Models\Sector;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 
@@ -17,7 +18,25 @@ class CultivoController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->input('per_page', 10);
-        $cultivosPaginados = Cultivo::paginate($perPage);
+        $search = $request->input('search');
+        $sortBy = $request->input('sort_by', 'id'); // columna por defecto
+        $sortDir = $request->input('sort_dir', 'asc'); // dirección por defecto
+
+        $query = Cultivo::query();
+
+        if ($search) {
+            $query->where('nombre', 'like', "%{$search}%");
+        }
+
+        // Validar sortDir para evitar valores inválidos
+        if (!in_array(strtolower($sortDir), ['asc', 'desc'])) {
+            $sortDir = 'asc';
+        }
+
+        $query->orderBy($sortBy, $sortDir);
+
+        $cultivosPaginados = $query->paginate($perPage);
+
         $cultivosResource = CultivoResource::collection($cultivosPaginados);
 
         return $this->paginatedResponse($cultivosResource, $cultivosPaginados);
@@ -41,51 +60,41 @@ class CultivoController extends Controller
         ], 200);
     }
 
-    // Metodo para crear un nuevo Cultivo
-    public function store(StoreCultivoRequest $request)
+    public function store(CultivoRequest $request)
     {
-        $validated = $request->validated();
-
-        $cultivo = Cultivo::create([
-            'nombre' => $validated['nombre'],
-            'tipo_id' => $validated['tipo_id'],
-        ]);
-
+        $cultivo = Cultivo::create($request->validated());
 
         return response()->json([
             'status' => 'success',
-            'data' => $cultivo
-        ], 201); // Created
+            'message' => 'Cultivo creado correctamente.',
+            'data' => new CultivoResource($cultivo)
+        ], 201);
     }
 
-    public function update(StoreCultivoRequest $request, $id)
+    public function update(CultivoRequest $request, Cultivo $cultivo)
     {
-        // Encontramos el cultivo por su ID
-        $cultivo = Cultivo::find($id);
-
-        // Si no se encuentra el cultivo, devolvemos un error
-        if (!$cultivo) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Tipo no encontrado'
-            ], 404); // Not Found
-        }
-
-        // Validamos los datos a través de StoreTipoRequest
         $validated = $request->validated();
 
-        // Actualizamos los campos del cultivo con los datos validados
-        $cultivo->nombre = $validated['nombre'];
-        $cultivo->tipo_id = $validated['tipo_id'];
+        $cultivo->fill($validated);
 
-        // Guardamos el cultivo actualizado en la base de datos
+        if ($cultivo->isClean()) {
+            return response()->json([
+                'status' => 'info',
+                'message' => 'No hay cambios que actualizar.'
+            ], 200);
+        }
+        // Bloquear edición si el cultivo está plantado en algún sector
+        if ($cultivo->sectores()->exists()) {
+            return response()->json([
+                'message' => 'No se puede modificar un cultivo que ya está plantado en un sector.'
+            ], 403);
+        }
         $cultivo->save();
 
-        // Devolvemos el cultivo actualizado
         return response()->json([
             'status' => 'success',
-            'data' => $cultivo
-        ], 200);
+            'data' => new CultivoResource($cultivo->fresh())
+        ]);
     }
 
     public function delete($id)
@@ -109,6 +118,38 @@ class CultivoController extends Controller
             'status' => 'success',
             'data' => $cultivo
         ], 200); // 200 OK
+    }
+
+
+    public function plantarSector(Request $request, $cultivoId)
+    {
+        $request->validate([
+            'sector_id' => 'required|exists:sectors,id'
+        ]);
+
+        $cultivo = Cultivo::findOrFail($cultivoId);
+        $sector = Sector::findOrFail($request->sector_id);
+
+        // Verifica si el sector ya tiene cultivo
+        if ($sector->cultivos()->exists()) {
+            return response()->json(['message' => 'El sector ya tiene un cultivo plantado'], 400);
+        }
+
+        $cultivo->sectores()->attach($sector->id);
+
+        return response()->json(['message' => 'Cultivo plantado correctamente']);
+    }
+
+    public function cultivosTipo(Request $request, $tipoId)
+    {
+        $cultivos = Cultivo::where('tipo_id', $tipoId)->get();
+        $cultivosResource = CultivoResource::collection($cultivos);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Cultivos del tipo especificado obtenidos correctamente.',
+            'data' => $cultivosResource
+        ], 200);
     }
 }
 

@@ -19,7 +19,7 @@ class SectorResource extends JsonResource
             'numero_sector' => $this->numero_sector,
             'numero_parcela' => $this->parcela->numero_parcela,
             'parcela_nombre' => $this->parcela->nombre,
-
+            'parcela_id' => $this->parcela_id
         ];
     }
 }

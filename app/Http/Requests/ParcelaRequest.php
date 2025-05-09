@@ -4,9 +4,10 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
-class StoreParcelaRequest extends FormRequest
+class ParcelaRequest extends FormRequest
 {
 
     /**
@@ -17,17 +18,30 @@ class StoreParcelaRequest extends FormRequest
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
+
     public function rules(): array
     {
+        $parcelaId = $this->route('id'); // o 'id' según cómo se llama en tu ruta
+
         return [
-            'nombre' => 'required|string|max:255|unique:parcelas,nombre',
-            'numero_parcela' => 'required|integer|min:1|max:999|unique:parcelas,numero_parcela',
-            'area' => 'required|numeric|gt:0',
+            'nombre' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('parcelas', 'nombre')->ignore($parcelaId),
+            ],
+            'numero_parcela' => [
+                'required',
+                'integer',
+                'min:1',
+                'max:999',
+                Rule::unique('parcelas', 'numero_parcela')->ignore($parcelaId),
+            ],
+            'area' => [
+                'required',
+                'numeric',
+                'gt:0',
+            ],
         ];
     }
 

@@ -26,7 +26,9 @@ class DatabaseSeeder extends Seeder
             TipoSeeder::class,
             CultivoSeeder::class,
             ParcelaSeeder::class,
-            SectorSeeder::class
+            SectorSeeder::class,
+            SectorCultivoSeeder::class,
+            ProveedorSeeder::class
         ]);
     }
 

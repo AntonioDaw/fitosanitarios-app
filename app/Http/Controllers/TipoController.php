@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreTipoRequest;
+use App\Http\Requests\TipoRequest;
 use App\Http\Resources\TipoResource;
 use App\Models\Tipo;
 use App\Traits\ApiResponser;
@@ -34,56 +34,46 @@ public function index(Request $request)
 
         return response()->json([
             'status' => 'success',
-            'data' => $tipo
+            'data' => new TipoResource($tipo)
         ], 200); // OK
     }
 
     // Metodo para crear un nuevo Tipo
-    public function store(StoreTipoRequest $request)
+    public function store(TipoRequest $request)
     {
-        $validated = $request->validated();
-
-        $tipo = Tipo::create([
-            'nombre' => $validated['nombre'],
-            'icono' => $validated['icono'],
-        ]);
-
-
+        $tipo = Tipo::create($request->validated());
 
         return response()->json([
             'status' => 'success',
-            'data' => $tipo
-        ], 201); // Created
+            'message' => 'Tipo creado correctamente.',
+            'data' => new TipoResource($tipo)
+        ], 201);
     }
 
-    public function update(StoreTipoRequest $request, $id)
+
+
+
+
+    public function update(TipoRequest $request, Tipo $tipo)
     {
-        // Encontramos el tipo por su ID
-        $tipo = Tipo::find($id);
-
-        // Si no se encuentra el tipo, devolvemos un error
-        if (!$tipo) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Tipo no encontrado'
-            ], 404); // Not Found
-        }
-
-        // Validamos los datos a través de StoreTipoRequest
         $validated = $request->validated();
 
-        // Actualizamos los campos del tipo con los datos validados
-        $tipo->nombre = $validated['nombre'];
-        $tipo->icono = $validated['icono'];
+        $tipo->fill($validated);
 
-        // Guardamos el tipo actualizado en la base de datos
-        $tipo->save();
+        if ($tipo->isClean()) {
+            return response()->json([
+                'status' => 'info',
+                'message' => 'No hay cambios que actualizar.'
+            ], 200);
+        }
 
-        // Devolvemos el tipo actualizado
+        $tipo->update($validated);
+
         return response()->json([
             'status' => 'success',
-            'data' => $tipo
-        ], 200);
+            'message' => 'Tipo actualizado correctamente.',
+            'data' => new TipoResource($tipo)
+        ]);
     }
 
     public function delete($id){

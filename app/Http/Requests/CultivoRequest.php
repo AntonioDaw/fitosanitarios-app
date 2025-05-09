@@ -1,13 +1,13 @@
 <?php
 
 namespace App\Http\Requests;
-
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 
-class StoreTipoRequest extends FormRequest
+class CultivoRequest extends FormRequest
 {
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -17,17 +17,18 @@ class StoreTipoRequest extends FormRequest
     }
 
     /**
-     * Determina las validaciones que se aplican a la solicitud.
+     * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'nombre' => 'required|string|max:255|unique:tipos,nombre',
-            'icono' => 'required|string|max:255|regex:/^([a-zA-Z0-9\-\_]+)\.png$/',
-        ];
+                'nombre' => 'required|string|max:255',
+                'tipo_id' => 'required|exists:tipos,id', // valida que el tipo exista
+            ];
     }
+
     /**
      * Obtiene mensajes personalizados para las validaciones.
      *
@@ -36,9 +37,10 @@ class StoreTipoRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'nombre.required' => 'El nombre es obligatorio.',
+            'nombre' => 'required|string|max:255|unique:cultivos,nombre',
             'nombre.unique' => 'El nombre debe ser único.',
-            'icono.regex' => 'El icono debe ser un archivo .png y solo contener letras, números, guiones y guiones bajos.',
+            'tipo_id.required' => 'El tipo es obligatorio.',
+            'tipo_id.exists' => 'El tipo no existe.',
         ];
     }
 

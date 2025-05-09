@@ -9,9 +9,10 @@ class Sector extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['parcela_id', 'numero_sector'];
     public function cultivos()
     {
-        return $this->belongsToMany(Cultivo::class);
+        return $this->belongsToMany(Cultivo::class, 'cultivo_sector');
     }
 
     public function parcela()

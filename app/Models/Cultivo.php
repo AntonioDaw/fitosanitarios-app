@@ -15,9 +15,9 @@ class Cultivo extends Model
         return $this->belongsTo(Tipo::class);
     }
 
-    public function sectors()
+    public function sectores()
     {
-        return $this->belongsToMany(Sector::class);
+        return $this->belongsToMany(Sector::class, 'cultivo_sector');
     }
 
 }
