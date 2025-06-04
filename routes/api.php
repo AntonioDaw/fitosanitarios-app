@@ -41,4 +41,7 @@ Route::get('/sectores/cultivos/{nombre}', [SectorController::class, 'sectoresCul
 
 Route::get('/proveedores', [ProveedorController::class, 'index']);
 Route::get('/proveedores/{id}', [ProveedorController::class, 'show']);
-
+Route::post('/proveedores', [ProveedorController::class, 'store']);
+Route::put('/proveedores/{proveedor}', [ProveedorController::class, 'update']);
+Route::delete('/proveedores/{id}', [ProveedorController::class, 'delete']);
+Route::patch('/proveedores/{id}/toggle-estado', [ProveedorController::class, 'toggleEstado']);

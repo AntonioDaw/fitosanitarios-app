@@ -12,12 +12,20 @@ class Proveedor extends Model
 
     protected $fillable = [
         'nombre',
-        'nit',
+        'nif',
         'direccion',
         'telefono',
         'email',
         'contacto',
         'estado',
+    ];
+
+    protected $casts = [
+        'estado' => 'boolean',
+    ];
+
+    protected $attributes = [
+        'estado' => true, // valor por defecto al crear el modelo si no se manda
     ];
 
 }
