@@ -62,10 +62,18 @@ class ProveedorController extends Controller
         }
 
         // Validar datos con ProveedorRequest
+
         $validated = $request->validated();
 
         // Actualizar atributos
         $proveedor->fill($validated);
+
+        if ($proveedor->isClean()) {
+            return response()->json([
+                'status' => 'info',
+                'message' => 'No se realizaron cambios.'
+            ], 200);
+        }
 
         // Guardar en la base de datos
         $proveedor->save();

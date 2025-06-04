@@ -13,7 +13,6 @@ class ProveedorSeeder extends Seeder
      */
     public function run(): void
     {
-        Proveedor::truncate(); // Limpia la tabla si es necesario
 
         Proveedor::insert([
             [

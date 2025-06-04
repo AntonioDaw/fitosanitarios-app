@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\CultivoController;
 use App\Http\Controllers\ParcelaController;
+use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\SectorController;
 use App\Http\Controllers\TipoController;
+use App\Http\Controllers\UnidadProductoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -45,3 +47,17 @@ Route::post('/proveedores', [ProveedorController::class, 'store']);
 Route::put('/proveedores/{proveedor}', [ProveedorController::class, 'update']);
 Route::delete('/proveedores/{id}', [ProveedorController::class, 'delete']);
 Route::patch('/proveedores/{id}/toggle-estado', [ProveedorController::class, 'toggleEstado']);
+
+Route::get('productos', [ProductoController::class, 'index']);
+Route::get('productos/{id}', [ProductoController::class, 'show']);
+Route::post('productos', [ProductoController::class, 'store']);
+Route::put('productos/{producto}', [ProductoController::class, 'update']);
+Route::patch('productos/{producto}', [ProductoController::class, 'update']);
+Route::delete('productos/{id}', [ProductoController::class, 'destroy']);
+
+Route::get('unidadproductos', [UnidadProductoController::class, 'index']);
+Route::get('unidadproductos/{id}', [UnidadProductoController::class, 'show']);
+Route::post('unidadproductos', [UnidadProductoController::class, 'store']);
+Route::put('unidadproductos/{unidadProducto}', [UnidadProductoController::class, 'update']);
+Route::patch('unidadproductos/{unidadproducto}', [UnidadProductoController::class, 'update']);
+Route::delete('unidadproductos/{id}', [UnidadProductoController::class, 'destroy']);
