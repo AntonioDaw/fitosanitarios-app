@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Cultivo extends Model
 {
     use HasFactory;
+
     protected $fillable = ['nombre', 'tipo_id'];
     public function tipo()
     {
@@ -20,4 +21,8 @@ class Cultivo extends Model
         return $this->belongsToMany(Sector::class, 'cultivo_sector');
     }
 
+    public function tratamientos()
+    {
+        return $this->belongsToMany(Tratamiento::class);
+    }
 }

@@ -28,7 +28,7 @@ class CultivoSeeder extends Seeder
         // Recorrer cada tipo y asociarle 3 cultivos
         foreach ($tipos as $tipo) {
             // Crear 3 cultivos para cada tipo
-            Cultivo::factory(3)->create([
+            Cultivo::factory(6)->create([
                 'tipo_id' => $tipo->id,  // Asociar cada cultivo con el tipo actual
             ]);
         }

@@ -9,6 +9,7 @@ class Producto extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductoFactory> */
     use HasFactory;
+
     protected $fillable = [
         'nombre',
         'sustancia_activa',
@@ -28,5 +29,12 @@ class Producto extends Model
     public function unidades()
     {
         return $this->hasMany(UnidadProducto::class);
+    }
+
+    public function tratamientos()
+    {
+        return $this->belongsToMany(Tratamiento::class)
+            ->withPivot('cantidad_por_100_litros')
+            ->withTimestamps();
     }
 }

@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('unidad_productos', function (Blueprint $table) {
+        Schema::create('aplicacions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('producto_id')->constrained('productos')->onDelete('cascade');
-            $table->foreignId('proveedor_id')->constrained('proveedors')->onDelete('cascade');
-            $table->string('codigo_interno')->unique();
-            $table->tinyInteger('estado')->default(2);
             $table->timestamps();
         });
     }
@@ -26,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('unidad_productos');
+        Schema::dropIfExists('aplicacions');
     }
 };

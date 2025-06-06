@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             ProveedorSeeder::class,
             ProductoSeeder::class,
             UnidadProductoSeeder::class,
+            TratamientoSeeder::class,
         ]);
     }
 

@@ -20,7 +20,7 @@ class UnidadProductoController extends Controller
         return $this->paginatedResponse($unidad_productosResource, $unidad_productosPaginados);
     }
 
-    // Ver detalle de un producto
+
     public function show($id)
     {
         $unidad_producto = UnidadProducto::find($id);
@@ -35,7 +35,6 @@ class UnidadProductoController extends Controller
         return response()->json(new UnidadProductoResource($unidad_producto), 200);
     }
 
-    // Crear producto
     public function store(UnidadProductoRequest $request)
     {
 
@@ -48,7 +47,7 @@ class UnidadProductoController extends Controller
         ], 201);
     }
 
-    // Actualizar producto
+
     public function update(UnidadProductoRequest $request, $id)
     {
         $unidad_producto = UnidadProducto::find($id);
@@ -78,7 +77,6 @@ class UnidadProductoController extends Controller
         ], 200);
     }
 
-    // Eliminar producto
     public function destroy($id)
     {
         $unidad_producto = UnidadProducto::find($id);
