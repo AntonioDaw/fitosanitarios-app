@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AplicacionController;
 use App\Http\Controllers\CultivoController;
 use App\Http\Controllers\ParcelaController;
 use App\Http\Controllers\ProductoController;
@@ -68,3 +69,6 @@ Route::post('tratamientos', [TratamientoController::class, 'store']);
 Route::put('tratamientos/{tratamiento}', [TratamientoController::class, 'update']);
 Route::delete('tratamientos/{id}', [TratamientoController::class, 'destroy']);
 Route::post('/tratamientos/{id}/avanzar', [TratamientoController::class, 'avanzarEstado']);
+
+Route::post('aplicaciones', [AplicacionController::class, 'store']);
+Route::get('aplicaciones', [AplicacionController::class, 'index']);

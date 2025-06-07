@@ -142,4 +142,16 @@ class TratamientoController extends Controller
         ], 200);
     }
 
+    public function tratamientosTipo(Request $request, $tipoId)
+    {
+        $tratamientos = Tratamiento::where('tipo_id', $tipoId)->get();
+        $tratamientosResource = TratamientoResource::collection($tratamientos);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Tratamientos del tipo especificado obtenidos correctamente.',
+            'data' => $tratamientosResource
+        ], 200);
+    }
+
 }

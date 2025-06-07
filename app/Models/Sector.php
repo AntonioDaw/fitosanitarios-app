@@ -19,4 +19,12 @@ class Sector extends Model
     {
         return $this->belongsTo(Parcela::class);
     }
+
+    public function aplicaciones()
+    {
+        return $this->belongsToMany(Aplicacion::class, 'aplicacion_sector')
+            ->withPivot('litros_aplicados')
+            ->withTimestamps();
+    }
+
 }

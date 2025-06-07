@@ -13,6 +13,6 @@ class TratamientoSeeder extends Seeder
      */
     public function run(): void
     {
-       Tratamiento::factory()->count(10)->create();
+       Tratamiento::factory()->count(30)->create();
     }
 }

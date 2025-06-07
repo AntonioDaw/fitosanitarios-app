@@ -45,4 +45,10 @@ class UnidadProducto extends Model
             $unidad->codigo_interno = "UP-{$proveedorId}-{$productoId}-{$fecha}-{$correlativo}";
         });
     }
+
+    public function aplicaciones()
+    {
+        return $this->belongsToMany(Aplicacion::class);
+    }
+
 }
