@@ -42,6 +42,12 @@ class CultivoController extends Controller
         return $this->paginatedResponse($cultivosResource, $cultivosPaginados);
     }
 
+    public function listaCultivos(Request $request)
+    {
+        $cultivos = Cultivo::all();
+        return CultivoResource::collection($cultivos);
+    }
+
 
     public function show($id)
     {

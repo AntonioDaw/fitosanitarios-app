@@ -28,6 +28,7 @@ Route::put('/cultivos/{cultivo}', [CultivoController::class, 'update']);
 Route::delete('/cultivos/{id}', [CultivoController::class, 'delete']);
 Route::post('/cultivos/plantar/{cultivoId}', [CultivoController::class, 'plantarSector']);
 Route::get('/tipos/{tipoId}/cultivos', [CultivoController::class, 'cultivosTipo']);
+Route::get('/listacultivos', [CultivoController::class, 'listaCultivos']);
 
 Route::get('/parcelas', [ParcelaController::class, 'index']);
 Route::get('/parcelas/{id}', [ParcelaController::class, 'show']);
@@ -56,6 +57,7 @@ Route::post('productos', [ProductoController::class, 'store']);
 Route::put('productos/{producto}', [ProductoController::class, 'update']);
 Route::patch('productos/{producto}', [ProductoController::class, 'update']);
 Route::delete('productos/{id}', [ProductoController::class, 'destroy']);
+Route::get('/listaproductos', [ProductoController::class, 'listaProductos']);
 
 Route::get('unidadproductos', [UnidadProductoController::class, 'index']);
 Route::get('unidadproductos/{id}', [UnidadProductoController::class, 'show']);
@@ -69,6 +71,7 @@ Route::post('tratamientos', [TratamientoController::class, 'store']);
 Route::put('tratamientos/{tratamiento}', [TratamientoController::class, 'update']);
 Route::delete('tratamientos/{id}', [TratamientoController::class, 'destroy']);
 Route::post('/tratamientos/{id}/avanzar', [TratamientoController::class, 'avanzarEstado']);
+Route::get('tratamientos/tipo/{id}', [TratamientoController::class, 'tratamientosTipo']);
 
 Route::post('aplicaciones', [AplicacionController::class, 'store']);
 Route::get('aplicaciones', [AplicacionController::class, 'index']);

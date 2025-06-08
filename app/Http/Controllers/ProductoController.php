@@ -19,6 +19,11 @@ class ProductoController extends Controller
 
         return $this->paginatedResponse($productosResource, $productosPaginados);
     }
+    public function listaProductos(Request $request)
+    {
+        $productos =Producto::all();
+        return ProductoResource::collection($productos);
+    }
 
     // Ver detalle de un producto
     public function show($id)

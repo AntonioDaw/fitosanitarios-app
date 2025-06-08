@@ -27,6 +27,6 @@ class Tratamiento extends Model
 
     public function tipo()
     {
-        return $this->belongsTo(Cultivo::class, 'tipo_id');
+        return $this->belongsTo(Tipo::class, 'tipo_id');
     }
 }

@@ -22,7 +22,7 @@ class TratamientoController extends Controller
 
     public function show($id)
     {
-        $tratamiento = Tratamiento::with(['productos','cultivos'])->find($id);
+        $tratamiento = Tratamiento::with(['productos','cultivos', 'tipo'])->find($id);
 
         if (!$tratamiento) {
             return response()->json([
@@ -144,14 +144,32 @@ class TratamientoController extends Controller
 
     public function tratamientosTipo(Request $request, $tipoId)
     {
-        $tratamientos = Tratamiento::where('tipo_id', $tipoId)->get();
-        $tratamientosResource = TratamientoResource::collection($tratamientos);
+        $search = $request->input('search');
+        $sortBy = $request->input('sort_by', 'id');
+        $sortDir = $request->input('sort_dir', 'asc');
+
+        // Validar sortDir para evitar valores inválidos
+        if (!in_array(strtolower($sortDir), ['asc', 'desc'])) {
+            $sortDir = 'asc';
+        }
+
+        $query = Tratamiento::with(['productos', 'cultivos', 'tipo'])
+            ->where('tipo_id', $tipoId);
+
+        if ($search) {
+            $query->where('descripcion', 'like', "%{$search}%");
+        }
+
+        $query->orderBy($sortBy, $sortDir);
+
+        $tratamientos = $query->get();
 
         return response()->json([
             'status' => 'success',
             'message' => 'Tratamientos del tipo especificado obtenidos correctamente.',
-            'data' => $tratamientosResource
+            'data' => TratamientoResource::collection($tratamientos),
         ], 200);
     }
+
 
 }

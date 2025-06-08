@@ -16,7 +16,7 @@ class TratamientoResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'tipo_id' => $this->tipo_id,
+            'tipo' => new TipoResource($this->whenLoaded('tipo')),
             'descripcion' => $this->descripcion,
             'cultivos' => CultivoTratamientoResource::collection($this->whenLoaded('cultivos')),
             'productos' => ProductoTratamientoResource::collection($this->whenLoaded('productos')),

@@ -22,8 +22,6 @@ class TratamientoRequest extends FormRequest
         return [
             'tipo_id' => ['required', 'exists:tipos,id'],
             'descripcion' => ['required', 'string'],
-            'estado' => ['required', 'integer', Rule::in([0, 1, 2])],
-
             'productos' => ['required', 'array', 'min:1'],
             'productos.*.id' => ['required', 'integer', 'exists:productos,id'],
             'productos.*.cantidad_por_100_litros' => ['required', 'numeric', 'min:0.01'],
@@ -41,9 +39,7 @@ class TratamientoRequest extends FormRequest
 
             'descripcion.string' => 'La descripción debe ser un texto.',
             'descripcion.required' => 'Descripcion es obligatorio.',
-            'estado.integer' => 'El estado debe ser un número.',
-            'estado.in' => 'El estado debe ser 0 (pendiente), 1 (aplicado) o 2 (cancelado).',
-            'estado' => 'El estado es obligatorio.',
+
             'productos.required' => 'Debe incluir al menos un producto.',
             'productos.array' => 'El campo productos debe ser una lista.',
             'productos.*.id.required' => 'Cada producto debe tener un ID.',
