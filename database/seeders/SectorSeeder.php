@@ -15,10 +15,15 @@ class SectorSeeder extends Seeder
     public function run(): void
     {
         Parcela::all()->each(function ($parcela) {
-            // Crea entre 2 y 4 sectores para cada parcela existente
-            Sector::factory()->count(rand(2, 4))->create([
-                'parcela_id' => $parcela->id,
-            ]);
+            $n = rand(2, 4); // número de sectores a crear
+
+            for ($i = 1; $i <= $n; $i++) {
+                Sector::factory()->create([
+                    'parcela_id' => $parcela->id,
+                    'numero_sector' => $i,
+                ]);
+            }
         });
     }
+
 }

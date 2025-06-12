@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ParcelaRequest;
+use App\Http\Resources\ParcelaResource;
 use App\Models\Parcela;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
@@ -12,11 +13,37 @@ class ParcelaController extends Controller
     use ApiResponser;
     public function index(Request $request)
     {
+        $search = $request->input('search');
+        $sortBy = $request->input('sort_by', 'id'); // columna por defecto
+        $sortDir = $request->input('sort_dir', 'asc'); // dirección por defecto
+
+        $query = Parcela::query();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nombre', 'like', "%{$search}%")
+                    ->orWhere('numero_parcela', 'like', "%{$search}%");
+            })
+                ->orWhere(function ($q) use ($search) {
+                    // Si el $search es un número, podrías intentar comparar el count de sectores
+                    if (is_numeric($search)) {
+                        $q->has('sectors', '=', (int)$search); // Busca parcelas con un número exacto de sectores
+                    }
+                });
+        }
+
+
+        // Validar sortDir para evitar valores inválidos
+        if (!in_array(strtolower($sortDir), ['asc', 'desc'])) {
+            $sortDir = 'asc';
+        }
+
+        $query->orderBy($sortBy, $sortDir);
         $perPage = $request->input('per_page', 10);
-        $parcelasPaginadas = Parcela::paginate($perPage);
+        $parcelasPaginadas = $query->paginate($perPage);
+        $parcelasResource = ParcelaResource::collection($parcelasPaginadas);
 
-
-        return $this->paginatedResponse($parcelasPaginadas->items(), $parcelasPaginadas);
+        return $this->paginatedResponse($parcelasResource, $parcelasPaginadas);
     }
 
     public function show($id)
@@ -32,7 +59,7 @@ class ParcelaController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data' => $parcela
+            'data' => new  ParcelaResource($parcela)
         ], 200); // OK
     }
 
@@ -41,18 +68,25 @@ class ParcelaController extends Controller
     {
         $validated = $request->validated();
 
-        $tipo = Parcela::create([
+        $parcela = Parcela::create([
             'nombre' => $validated['nombre'],
             'numero_parcela' => $validated['numero_parcela'],
             'area' => $validated['area'],
         ]);
 
-
+        // Crear sectores si se indicó 'n_sectores'
+        if (!empty($validated['n_sectores']) && is_numeric($validated['n_sectores'])) {
+            for ($i = 1; $i <= $validated['n_sectores']; $i++) {
+                $parcela->sectors()->create([
+                    'numero_sector' => $i,
+                ]);
+            }
+        }
 
         return response()->json([
             'status' => 'success',
-            'data' => $tipo
-        ], 201); // Created
+            'data' => new ParcelaResource($parcela) // incluir sectores en la respuesta
+        ], 201);
     }
 
     public function update(ParcelaRequest $request, $id)

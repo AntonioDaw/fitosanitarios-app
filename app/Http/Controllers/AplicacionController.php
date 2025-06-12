@@ -28,6 +28,20 @@ class AplicacionController extends Controller
 
         return $this->paginatedResponse($aplicacionesResource, $aplicacionesPaginados);
     }
+
+    public function show($id)
+    {
+        $aplicacion = Aplicacion::find($id);
+
+        if (!$aplicacion) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unidad no encontrada'
+            ], 404);
+        }
+
+        return response()->json(new AplicacionResource($aplicacion), 200);
+    }
     public function store(AplicacionRequest $request)
     {
 
@@ -108,5 +122,23 @@ class AplicacionController extends Controller
             'gasto_por_producto' => $gasto,
         ]);
     }
+    public function aprobar($id)
+    {
+        $aplicacion = Aplicacion::findOrFail($id);
+        $aplicacion->estado = 'validada';
+        $aplicacion->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function rechazar($id)
+    {
+        $aplicacion = Aplicacion::findOrFail($id);
+        $aplicacion->estado = 'rechazada';
+        $aplicacion->save();
+
+        return response()->json(['success' => true]);
+    }
+
 }
 

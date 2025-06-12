@@ -47,10 +47,6 @@ class ProductoRequest extends FormRequest
                 'numeric',
                 'min:0',
             ],
-            'estado' => [
-                'required',
-                'boolean'
-            ],
         ];
     }
 
@@ -76,9 +72,6 @@ class ProductoRequest extends FormRequest
             'precio.required' => 'El precio es obligatorio.',
             'precio.regex' => 'El precio debe ser un número válido con hasta dos decimales.',
             'precio.min' => 'El precio debe ser cero o mayor.',
-
-            'estado.required' => 'El estado es obligatorio.',
-            'estado.boolean' => 'El estado debe ser verdadero o falso.',
         ];
     }
 

@@ -26,22 +26,18 @@ class AplicacionResource extends JsonResource
             ],
             'litros' => $this->litros,
             'gasto_por_producto' => $this->gasto_por_producto,
-            'sectores' => $this->sectores->map(function ($sector) {
-                return [
-                    'id' => $sector->id,
-                    'numero' => $sector->numero_sector,
-                    'litros_aplicados' => $sector->pivot->litros_aplicados,
-                ];
-            }),
-            'unidades_producto' => $this->unidadesProducto->map(function ($unidad) {
-                return [
-                    'id' => $unidad->id,
-                    'producto' => [
-                        'id' => $unidad->producto->id,
-                        'nombre' => $unidad->producto->nombre,
-                    ]
-                ];
-            }),
+            'sectores' => SectorResource::collection($this->sectores),
+            'unidades_producto' => $this->unidadesProducto
+                ->filter(fn($unidad) => $unidad->estado !== 2)
+                ->map(function ($unidad) {
+                    return [
+                        'id' => $unidad->id,
+                        'producto' => [
+                            'id' => $unidad->producto->id,
+                            'nombre' => $unidad->producto->nombre,
+                        ]
+                    ];
+                }),
             'created_at' => $this->created_at->toDateTimeString(),
             'estado' => $this->estado
         ];

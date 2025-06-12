@@ -17,6 +17,14 @@ class CultivoTratamientoResource extends JsonResource
         return [
             'id' => $this->id,
             'nombre' => $this->nombre,
+            'sectores' => $this->sectores->map(function ($sector) {
+                return [
+                    'id' => $sector->id,
+                    'numero' => $sector->numero_sector,
+                    // Si hay campos extra en la tabla intermedia:
+                    // 'otro_campo' => $sector->pivot->otro_campo,
+                ];
+            }),
         ];
     }
 }

@@ -25,7 +25,7 @@ class CultivoRequest extends FormRequest
     {
         return [
                 'nombre' => 'required|string|max:255',
-                'tipo_id' => 'required|exists:tipos,id', // valida que el tipo exista
+                'tipo_id' => 'required|exists:tipos,id',
             ];
     }
 

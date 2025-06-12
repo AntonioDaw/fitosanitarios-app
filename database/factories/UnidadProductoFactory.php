@@ -21,7 +21,7 @@ class UnidadProductoFactory extends Factory
         return [
             'producto_id' => Producto::inRandomOrder()->first()->id ?? Producto::factory(),
             'proveedor_id' => Proveedor::inRandomOrder()->first()->id ?? Proveedor::factory(),
-            'estado' => $this->faker->randomElement([0, 1, 2]),
+            'estado' => 0,
         ];
     }
 }

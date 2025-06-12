@@ -18,6 +18,10 @@ class ProductoTratamientoResource extends JsonResource
             'id' => $this->id,
             'nombre' => $this->nombre,
             'cantidad_por_100_litros' => $this->pivot ? $this->pivot->cantidad_por_100_litros : null,
+            'unidad_productos' => UnidadProductoResource::collection(
+                $this->whenLoaded('unidad_productos')->filter(fn($unidad) => $unidad->estado != 2)
+
+            ),
         ];
     }
 }

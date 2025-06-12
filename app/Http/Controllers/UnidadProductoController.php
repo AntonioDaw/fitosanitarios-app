@@ -7,6 +7,7 @@ use App\Http\Resources\UnidadProductoResource;
 use App\Models\UnidadProducto;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UnidadProductoController extends Controller
 {
@@ -46,7 +47,37 @@ class UnidadProductoController extends Controller
             'data' => new UnidadProductoResource($unidad_producto)
         ], 201);
     }
+    public function storeLote(Request $request)
+    {
+        $validated = $request->validate([
+            'producto_id' => ['required', 'exists:productos,id'],
+            'proveedor_id' => ['required', 'exists:proveedors,id'],
+            'cantidad' => ['required', 'integer', 'min:1'],
+        ]);
 
+        DB::beginTransaction();
+
+        try {
+            for ($i = 0; $i < $validated['cantidad']; $i++) {
+                UnidadProducto::create([
+                    'producto_id' => $validated['producto_id'],
+                    'proveedor_id' => $validated['proveedor_id'],
+                    // Agrega más campos si necesitas
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json(['message' => 'Unidades registradas correctamente.'], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'message' => 'Error al registrar las unidades.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 
     public function update(UnidadProductoRequest $request, $id)
     {
@@ -94,5 +125,20 @@ class UnidadProductoController extends Controller
             'status' => 'success',
             'message' => 'Producto eliminado correctamente'
         ], 200);
+    }
+
+    public function listaUnidadProductos(Request $request)
+    {
+        $productoId = $request->input('producto_id');
+
+        $query = UnidadProducto::query();
+
+        if ($productoId) {
+            $query->where('producto_id', $productoId);
+        }
+
+        $unidad_productos = $query->get();
+
+        return UnidadProductoResource::collection($unidad_productos);
     }
 }

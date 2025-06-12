@@ -14,7 +14,22 @@ class ProductoController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->input('per_page', 10);
-        $productosPaginados = Producto::paginate($perPage);
+        $search = $request->input('search');
+        $sortBy = $request->input('sort_by', 'id');
+        $sortDir = $request->input('sort_dir', 'asc');
+        $query = Producto::query();
+        if ($search) {
+            $query->where('nombre', 'like', "%{$search}%");
+        }
+
+
+        if (!in_array(strtolower($sortDir), ['asc', 'desc'])) {
+            $sortDir = 'asc';
+        }
+
+        $query->orderBy($sortBy, $sortDir);
+
+        $productosPaginados = $query->paginate($perPage);
         $productosResource = ProductoResource::collection($productosPaginados);
 
         return $this->paginatedResponse($productosResource, $productosPaginados);
@@ -28,6 +43,13 @@ class ProductoController extends Controller
     // Ver detalle de un producto
     public function show($id)
     {
+        if (!is_numeric($id)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'ID inválido'
+            ], 400);
+        }
+
         $producto = Producto::find($id);
 
         if (!$producto) {
@@ -56,6 +78,12 @@ class ProductoController extends Controller
     // Actualizar producto
     public function update(ProductoRequest $request, $id)
     {
+        if (!is_numeric($id)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'ID inválido'
+            ], 400);
+        }
         $producto = Producto::find($id);
 
         if (!$producto) {
@@ -86,6 +114,13 @@ class ProductoController extends Controller
     // Eliminar producto
     public function destroy($id)
     {
+        if (!is_numeric($id)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'ID inválido'
+            ], 400);
+        }
+
         $producto = Producto::find($id);
 
         if (!$producto) {
