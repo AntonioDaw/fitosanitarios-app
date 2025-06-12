@@ -26,7 +26,7 @@ class Producto extends Model
         'estado' => true,
     ];
 
-    public function unidades()
+    public function unidad_productos()
     {
         return $this->hasMany(UnidadProducto::class);
     }

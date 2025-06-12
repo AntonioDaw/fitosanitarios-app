@@ -140,6 +140,9 @@ class CultivoController extends Controller
         if ($sector->cultivos()->exists()) {
             return response()->json(['message' => 'El sector ya tiene un cultivo plantado'], 400);
         }
+        if ($cultivo->sectores()->where('sectors.id', $sector->id)->exists()) {
+            return response()->json(['message' => 'Este cultivo ya está plantado en ese sector'], 400);
+        }
 
         $cultivo->sectores()->attach($sector->id);
 

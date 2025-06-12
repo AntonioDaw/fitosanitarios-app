@@ -28,8 +28,7 @@ class UnidadProductoRequest extends FormRequest
         // Reglas para crear (POST)
         return [
             'producto_id' => ['required', 'exists:productos,id'],
-            'proveedor_id' => ['required', 'exists:proveedors,id'],
-            'estado' => ['required', 'integer', Rule::in([0,1,2])],
+            'proveedor_id' => ['required', 'exists:proveedors,id']
         ];
     }
 

@@ -18,8 +18,8 @@ class TratamientoResource extends JsonResource
             'id' => $this->id,
             'tipo' => new TipoResource($this->whenLoaded('tipo')),
             'descripcion' => $this->descripcion,
-            'cultivos' => CultivoTratamientoResource::collection($this->whenLoaded('cultivos')),
-            'productos' => ProductoTratamientoResource::collection($this->whenLoaded('productos')),
+            'cultivos' => CultivoTratamientoResource::collection($this->cultivos),
+            'productos' => ProductoTratamientoResource::collection($this->productos->load('unidad_productos')),
             'created_at'=> $this->created_at->toDateTimeString(),
             'estado' => $this->estado
         ];

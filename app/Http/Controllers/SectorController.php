@@ -21,6 +21,27 @@ class SectorController extends Controller
         return $this->paginatedResponse($sectoresResource, $sectoresPaginados);
     }
 
+    public function sectoresPorTipoCultivo(Request $request)
+    {
+        $tipoCultivoId = $request->query('tipo_id');
+
+        if (!$tipoCultivoId) {
+            return response()->json([
+                'error' => 'Falta el parámetro tipo_id'
+            ], 400);
+        }
+
+        $sectores = Sector::with(['cultivos' => function ($query) use ($tipoCultivoId) {
+            $query->where('tipo_id', $tipoCultivoId);
+        }])
+            ->whereHas('cultivos', function ($query) use ($tipoCultivoId) {
+                $query->where('tipo_id', $tipoCultivoId);
+            })->get();
+
+        return response()->json($sectores);
+    }
+
+
     public function show($id)
     {
         $sector = Sector::find($id);
@@ -103,7 +124,5 @@ class SectorController extends Controller
             'data' => SectorResource::collection($sectores)
         ]);
     }
-
-
 
 }

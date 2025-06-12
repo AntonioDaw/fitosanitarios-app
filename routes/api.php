@@ -9,7 +9,9 @@ use App\Http\Controllers\SectorController;
 use App\Http\Controllers\TipoController;
 use App\Http\Controllers\TratamientoController;
 use App\Http\Controllers\UnidadProductoController;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
@@ -39,10 +41,12 @@ Route::delete('/parcelas/{id}', [ParcelaController::class, 'delete']);
 Route::get('/sectores', [SectorController::class, 'index']);
 Route::post('/sectores', [SectorController::class, 'store']);
 Route::get('/sectores/vacios', [SectorController::class, 'sectoresSinCultivos']);
+Route::get('/sectores/tipo', [SectorController::class, 'sectoresCultivos']);
 Route::get('/sectores/{id}', [SectorController::class, 'show']);
 Route::put('/sectores/{sector}', [SectorController::class, 'update']);
 Route::delete('/sectores/{id}', [SectorController::class, 'delete']);
 Route::get('/sectores/cultivos/{nombre}', [SectorController::class, 'sectoresCultivos']);
+Route::get('/sectores/tipo', [SectorController::class, 'sectoresCultivos']);
 
 Route::get('/proveedores', [ProveedorController::class, 'index']);
 Route::get('/proveedores/{id}', [ProveedorController::class, 'show']);
@@ -52,7 +56,7 @@ Route::delete('/proveedores/{id}', [ProveedorController::class, 'delete']);
 Route::patch('/proveedores/{id}/toggle-estado', [ProveedorController::class, 'toggleEstado']);
 
 Route::get('productos', [ProductoController::class, 'index']);
-Route::get('productos/{id}', [ProductoController::class, 'show']);
+Route::get('productos/{producto}', [ProductoController::class, 'show']);
 Route::post('productos', [ProductoController::class, 'store']);
 Route::put('productos/{producto}', [ProductoController::class, 'update']);
 Route::patch('productos/{producto}', [ProductoController::class, 'update']);
@@ -64,8 +68,10 @@ Route::get('unidadproductos/{id}', [UnidadProductoController::class, 'show']);
 Route::post('unidadproductos', [UnidadProductoController::class, 'store']);
 Route::put('unidadproductos/{unidadProducto}', [UnidadProductoController::class, 'update']);
 Route::delete('unidadproductos/{id}', [UnidadProductoController::class, 'destroy']);
+Route::post('/unidadproductos/lote', [UnidadProductoController::class, 'storeLote']);
 
 Route::get('tratamientos', [TratamientoController::class, 'index']);
+Route::get('tratamientos/form', [TratamientoController::class, 'tratamientosForm']);
 Route::get('tratamientos/{id}', [TratamientoController::class, 'show']);
 Route::post('tratamientos', [TratamientoController::class, 'store']);
 Route::put('tratamientos/{tratamiento}', [TratamientoController::class, 'update']);
@@ -73,5 +79,29 @@ Route::delete('tratamientos/{id}', [TratamientoController::class, 'destroy']);
 Route::post('/tratamientos/{id}/avanzar', [TratamientoController::class, 'avanzarEstado']);
 Route::get('tratamientos/tipo/{id}', [TratamientoController::class, 'tratamientosTipo']);
 
+
 Route::post('aplicaciones', [AplicacionController::class, 'store']);
 Route::get('aplicaciones', [AplicacionController::class, 'index']);
+Route::get('aplicaciones/{id}', [AplicacionController::class, 'show']);
+Route::post('aplicaciones/aprobar/{id}', [AplicacionController::class, 'aprobar']);
+Route::post('aplicaciones/rechazar/{id}', [AplicacionController::class, 'rechazar']);
+
+Route::post('/login', function(Request $request) {
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    $user = User::where('email', $request->email)->first();
+
+    if (! $user || ! Hash::check($request->password, $user->password)) {
+        return response()->json(['message' => 'Credenciales incorrectas'], 401);
+    }
+
+    $token = $user->createToken('api-token')->plainTextToken;
+
+    return response()->json([
+        'token' => $token,
+        'user' => $user,
+    ]);
+});

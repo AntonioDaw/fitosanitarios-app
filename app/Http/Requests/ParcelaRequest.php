@@ -55,9 +55,10 @@ class ParcelaRequest extends FormRequest
         return [
             'nombre.required' => 'El nombre es obligatorio.',
             'nombre.unique' => 'El nombre debe ser único.',
-            'numero_parcela.required' => 'El numero de parcela es obligatorio.',
-            'numero_parcela' => 'El numero de parcela debe ser único.',
-            'area.required' => 'El area es obligatorio.',
+            'numero_parcela.required' => 'El número de parcela es obligatorio.',
+            'numero_parcela.unique' => 'El número de parcela debe ser único.',
+            'area.required' => 'El área es obligatoria.',
+            'area.numeric' => 'El área debe ser numérica.',
         ];
     }
 

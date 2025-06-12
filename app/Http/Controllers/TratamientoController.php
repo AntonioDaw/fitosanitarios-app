@@ -14,7 +14,7 @@ class TratamientoController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->input('per_page', 10);
-        $tratamientosPaginados= Tratamiento::with(['productos','cultivos'])->paginate($perPage);
+        $tratamientosPaginados= Tratamiento::with(['productos','cultivos', 'tipo'])->paginate($perPage);
         $tratamientosResource = TratamientoResource::collection($tratamientosPaginados);
 
         return $this->paginatedResponse($tratamientosResource, $tratamientosPaginados);
@@ -79,14 +79,17 @@ class TratamientoController extends Controller
 
         $tratamiento->fill($validated);
 
-        if ($tratamiento->isClean()) {
-            return response()->json([
-                'status' => 'info',
-                'message' => 'No se realizaron cambios.'
-            ], 200);
-        }
-
         $tratamiento->save();
+
+        $tratamiento->cultivos()->sync($request->cultivos);
+
+        $productosSyncData = [];
+        foreach ($request->productos as $producto) {
+            $productosSyncData[$producto['id']] = [
+                'cantidad_por_100_litros' => $producto['cantidad_por_100_litros'],
+            ];
+        }
+        $tratamiento->productos()->sync($productosSyncData);
         return response()->json([
             'status' => 'success',
             'data' => new TratamientoResource($tratamiento)
@@ -163,6 +166,22 @@ class TratamientoController extends Controller
         $query->orderBy($sortBy, $sortDir);
 
         $tratamientos = $query->get();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Tratamientos del tipo especificado obtenidos correctamente.',
+            'data' => TratamientoResource::collection($tratamientos),
+        ], 200);
+    }
+
+    public function tratamientosForm(Request $request)
+    {
+        $tratamientos = Tratamiento::with(['productos', 'cultivos', 'tipo'])
+            ->where('estado', 1)->get()
+        ;
+
+
+
 
         return response()->json([
             'status' => 'success',
