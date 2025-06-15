@@ -11,3 +11,6 @@ Route::get('/', function () {
 
 //Route::get('/tipos/{id}', [TipoController::class, 'show']);
 //Route::get('/tipos', [TipoController::class, 'getAll']);
+Route::get('/', function () {
+    return 'Laravel funcionando 🎉';
+});

@@ -1,25 +1,22 @@
 FROM php:8.2-fpm
 
-# Dependencias del sistema
 RUN apt-get update && apt-get install -y \
-    zip unzip git curl libpng-dev libonig-dev libxml2-dev libzip-dev \
+    zip unzip git curl libpng-dev libonig-dev libxml2-dev libzip-dev netcat \
     && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
 
-# Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copia tu app
 COPY . /var/www
-
 WORKDIR /var/www
 
-# Permisos
 RUN chown -R www-data:www-data /var/www
 
-# Puerto expuesto
+RUN composer install --no-dev --optimize-autoloader
+
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 EXPOSE 8080
 
-# Comando por defecto
-CMD php artisan serve --host=0.0.0.0 --port=8080
+ENTRYPOINT ["entrypoint.sh"]
 
-RUN composer install --no-dev --optimize-autoloader
