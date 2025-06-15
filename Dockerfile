@@ -16,6 +16,8 @@ RUN composer install --no-dev --optimize-autoloader
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
+RUN apt-get update && apt-get install -y netcat
+
 EXPOSE 8080
 
 ENTRYPOINT ["entrypoint.sh"]
