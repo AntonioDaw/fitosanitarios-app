@@ -21,3 +21,5 @@ EXPOSE 8080
 
 # Comando por defecto
 CMD php artisan serve --host=0.0.0.0 --port=8080
+
+RUN composer install --no-dev --optimize-autoloader
