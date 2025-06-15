@@ -1,17 +1,17 @@
 #!/bin/sh
-set -e
 
-echo "Esperando a que la base de datos esté lista..."
+echo "Esperando a que la base de datos esté lista en $DB_HOST:$DB_PORT..."
+
 while ! nc -z $DB_HOST $DB_PORT; do
-  echo "Esperando a $DB_HOST:$DB_PORT..."
-  sleep 1
+  echo "Base de datos no disponible, esperando..."
+  sleep 2
 done
 
-echo "Ejecutando migraciones..."
-php artisan migrate --force
+echo "Base de datos disponible, ejecutando migraciones..."
 
-echo "Ejecutando seeders..."
+php artisan migrate --force
 php artisan db:seed --force
 
-echo "Arrancando servidor Laravel..."
+echo "Iniciando servidor..."
+
 php artisan serve --host=0.0.0.0 --port=8080
