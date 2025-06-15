@@ -16,7 +16,7 @@ WORKDIR /var/www
 RUN chown -R www-data:www-data /var/www
 
 # Instala dependencias de producción
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --optimize-autoloader
 
 # Copia el entrypoint
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
