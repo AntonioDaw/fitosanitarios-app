@@ -1,37 +1,23 @@
-# Usa la imagen oficial de PHP con las extensiones necesarias
-FROM php:8.1-fpm
+FROM php:8.2-fpm
 
-# Instala dependencias del sistema y extensiones PHP necesarias
+# Dependencias del sistema
 RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+    zip unzip git curl libpng-dev libonig-dev libxml2-dev libzip-dev \
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
 
-# Instala Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Establece el directorio de trabajo
-WORKDIR /var/www/html
+# Copia tu app
+COPY . /var/www
 
-# Copia el composer.lock y composer.json
-COPY composer.lock composer.json /var/www/html/
+WORKDIR /var/www
 
-# Instala las dependencias PHP con Composer
-RUN composer install --no-dev --optimize-autoloader
+# Permisos
+RUN chown -R www-data:www-data /var/www
 
-# Copia el resto de la aplicación
-COPY . /var/www/html
+# Puerto expuesto
+EXPOSE 8080
 
-# Otorga permisos a la carpeta storage y bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Expone el puerto 9000 (usado por php-fpm)
-EXPOSE 9000
-
-# Comando para ejecutar PHP-FPM
-CMD ["php-fpm"]
+# Comando por defecto
+CMD php artisan serve --host=0.0.0.0 --port=8080
