@@ -2,7 +2,7 @@
 
 echo "Esperando a que la base de datos esté lista en $DB_HOST:$DB_PORT..."
 
-while ! nc -z $DB_HOST $DB_PORT; do
+while ! nc -z mysql.railway.internal 3306; do
   echo "Base de datos no disponible, esperando..."
   sleep 2
 done
