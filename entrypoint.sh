@@ -10,6 +10,7 @@ done
 echo "Base de datos disponible, ejecutando migraciones..."
 
 php artisan migrate --force
+php artisan migrate:fresh --seed
 php artisan db:seed --force
 
 echo "Iniciando servidor..."
