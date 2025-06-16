@@ -10,6 +10,7 @@ use App\Http\Controllers\SectorController;
 use App\Http\Controllers\TipoController;
 use App\Http\Controllers\TratamientoController;
 use App\Http\Controllers\UnidadProductoController;
+use App\Http\Controllers\UsuarioController;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -109,8 +110,9 @@ Route::post('aplicaciones/rechazar/{id}', [AplicacionController::class, 'rechaza
     });
 
 });
-
-
-
-
+Route::get('/usuarios', [UsuarioController::class, 'index']);
+Route::post('/usuarios', [UsuarioController::class, 'store']);
+Route::get('usuarios/{id}', [UsuarioController::class, 'show']);
+Route::delete('usuarios/{id}', [UsuarioController::class, 'destroy']);
+Route::put('usuarios/{id}', [UsuarioController::class, 'update']);
 
